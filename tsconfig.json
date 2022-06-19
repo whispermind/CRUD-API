@@ -1,8 +1,14 @@
 {
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "esm": true,
+  },
   "compilerOptions": {
     "outDir": "./dist/",
     "target": "es2016",
-    "module": "es6",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "allowJs": true,

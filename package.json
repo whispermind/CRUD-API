@@ -3,23 +3,25 @@
   "version": "1.0.0",
   "description": "HAVA NAGILA",
   "private": "true",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "lint": "eslint ./src/** --ext .ts --ext .js --fix",
-    "build": "npm run lint & webpack"
+    "start:prod": "npm run lint & webpack & node ./dist/index.js",
+    "start:dev": "nodemon ./src/index.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^28.1.1",
     "@types/node": "^18.0.0",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.17.0",
     "eslint-webpack-plugin": "^3.1.1",
     "jest": "^28.1.1",
+    "nodemon": "^2.0.16",
     "ts-jest": "^28.0.5",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.8.1",
@@ -27,6 +29,8 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "eslint-config-airbnb-typescript": "^17.0.0"
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "npm": "^8.12.2",
+    "uuid": "^8.3.2"
   }
 }

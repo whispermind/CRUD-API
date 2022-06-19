@@ -1,12 +1,10 @@
-import path from 'path';
-import * as process from 'process';
-import * as url from 'url';
-import ESLintPlugin from 'eslint-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const mode = process.argv.mode | 'none';
+const path = require('path');
+const process = require('process');
+const url = require('url');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-export default (env, argv) => {
+module.exports =  (env, argv) => {
   const mode = argv.mode || 'none';
     return {
       entry: './src/index.ts',
@@ -25,8 +23,9 @@ export default (env, argv) => {
         ],
       },
       resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.js', '.ts'],
       },
+      target: "node",
       plugins: [
         new ESLintPlugin(),
         new CleanWebpackPlugin()
