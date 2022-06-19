@@ -29,6 +29,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "npm": "^8.12.2",
     "uuid": "^8.3.2"

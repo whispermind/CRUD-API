@@ -11,30 +11,34 @@ export interface IResponse {
 
 class RequestHandler {
   static endPointError = { status: 404, message: 'endpoint doesnt exist', payload: null };
+  static userIdRegExp = /\/users\/.+$/i;
 
   static get(urlData: UrlWithStringQuery): IResponse {
     const endPoint = urlData.path;
     switch (endPoint) {
-      case endPoint?.match(/\/users\/.+$/i)?.toString(): {
+      case endPoint?.match(RequestHandler.userIdRegExp)?.toString(): {
         const index = endPoint.lastIndexOf('/');
         const uuid = endPoint.slice(index + 1);
+        const isError = RequestHandler.validateUuid(uuid);
         let status = 200;
         let message = '';
 
-        if (!validate(uuid)) {
-          status = 400;
-          message = 'invalid user id';
-          return { status, payload: null, message };
+        if(isError){
+          return isError
         }
+
         const userData = DB.get(uuid);
         const payload = userData ? JSON.stringify(userData) : null;
+
         if (!payload) {
           status = 404;
           message = 'user not found';
         }
+
         return {
           payload,
           status,
+          message
         };
       }
       case '/users': {
@@ -43,7 +47,7 @@ class RequestHandler {
         return { payload, status };
       }
       default: {
-        return requestHandler.endPointError;
+        return RequestHandler.endPointError;
       }
     }
   }
@@ -73,7 +77,41 @@ class RequestHandler {
 
   static put() {}
 
-  static delete() {}
+  static delete(urlData: UrlWithStringQuery) {
+    const endPoint = urlData.path;
+    const index = endPoint!.lastIndexOf('/');
+    const uuid = endPoint!.slice(index + 1);
+    
+    switch (endPoint) {
+      case endPoint?.match(RequestHandler.userIdRegExp)?.toString(): {
+        const isError = RequestHandler.validateUuid(uuid);
+
+        if(isError){
+          return isError;
+        }
+
+        const result = DB.remove(uuid);
+        return {
+          status: result ? 200 : 404,
+          payload: null
+        }
+      }
+
+      default: {
+        return RequestHandler.endPointError;
+      }
+    }
+  }
+
+  static validateUuid(uuid: string): IResponse | null{
+    if (!validate(uuid)) {
+      const status = 400;
+      const message = 'invalid user id';
+      return { status, payload: null, message };
+    }
+
+    return null;
+  }
 }
 
 export default RequestHandler;
