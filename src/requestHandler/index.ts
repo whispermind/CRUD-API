@@ -11,6 +11,7 @@ export interface IResponse {
 
 class RequestHandler {
   static endPointError = { status: 404, message: 'endpoint doesnt exist', payload: null };
+
   static userIdRegExp = /\/users\/.+$/i;
 
   static get(urlData: UrlWithStringQuery): IResponse {
@@ -23,8 +24,8 @@ class RequestHandler {
         let status = 200;
         let message = '';
 
-        if(isError){
-          return isError
+        if (isError) {
+          return isError;
         }
 
         const userData = DB.get(uuid);
@@ -38,7 +39,7 @@ class RequestHandler {
         return {
           payload,
           status,
-          message
+          message,
         };
       }
       case '/users': {
@@ -52,7 +53,7 @@ class RequestHandler {
     }
   }
 
-  static post(urlData: UrlWithStringQuery, body: Partial<IUser>): IResponse {
+  static post(urlData: UrlWithStringQuery, body: Omit<IUser, 'id'>): IResponse {
     const endPoint = urlData.path;
     switch (endPoint) {
       case '/users': {
@@ -75,26 +76,24 @@ class RequestHandler {
     }
   }
 
-  static put() {}
-
-  static delete(urlData: UrlWithStringQuery) {
+  static put(urlData: UrlWithStringQuery, body: Omit<IUser, 'id'>) {
     const endPoint = urlData.path;
     const index = endPoint!.lastIndexOf('/');
     const uuid = endPoint!.slice(index + 1);
-    
+
     switch (endPoint) {
       case endPoint?.match(RequestHandler.userIdRegExp)?.toString(): {
         const isError = RequestHandler.validateUuid(uuid);
 
-        if(isError){
+        if (isError) {
           return isError;
         }
 
-        const result = DB.remove(uuid);
+        const result = DB.update(uuid, body);
         return {
           status: result ? 200 : 404,
-          payload: null
-        }
+          payload: null,
+        };
       }
 
       default: {
@@ -103,7 +102,33 @@ class RequestHandler {
     }
   }
 
-  static validateUuid(uuid: string): IResponse | null{
+  static delete(urlData: UrlWithStringQuery) {
+    const endPoint = urlData.path;
+    const index = endPoint!.lastIndexOf('/');
+    const uuid = endPoint!.slice(index + 1);
+
+    switch (endPoint) {
+      case endPoint?.match(RequestHandler.userIdRegExp)?.toString(): {
+        const isError = RequestHandler.validateUuid(uuid);
+
+        if (isError) {
+          return isError;
+        }
+
+        const result = DB.remove(uuid);
+        return {
+          status: result ? 200 : 404,
+          payload: null,
+        };
+      }
+
+      default: {
+        return RequestHandler.endPointError;
+      }
+    }
+  }
+
+  static validateUuid(uuid: string): IResponse | null {
     if (!validate(uuid)) {
       const status = 400;
       const message = 'invalid user id';

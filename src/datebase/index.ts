@@ -26,8 +26,12 @@ class DB {
     return id ? DB.storage[id] : DB.storage;
   }
 
-  static update(body: IUser) {
-    DB.storage[body.id] = body;
+  static update(id: string, body: Omit<IUser, 'id'>) {
+    if (DB.storage[id]) {
+      DB.storage[id] = {...body, id};
+      return true;
+    }
+    return false;
   }
 }
 
