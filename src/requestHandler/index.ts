@@ -58,8 +58,8 @@ class RequestHandler {
     switch (endPoint) {
       case '/users': {
         const isError = RequestHandler.validateData(body);
-        if(isError){
-          return isError
+        if (isError) {
+          return isError;
         }
         DB.add(body as Omit<IUser, 'id'>);
         return {
@@ -84,7 +84,7 @@ class RequestHandler {
         const isDataEror = RequestHandler.validateData(body);
 
         if (isUuidError || isDataEror) {
-          return isUuidError || isDataEror
+          return isUuidError || isDataEror;
         }
 
         const result = DB.update(uuid, body);
@@ -136,7 +136,7 @@ class RequestHandler {
     return null;
   }
 
-  static validateData(body: Omit<IUser, 'id'>){
+  static validateData(body: Omit<IUser, 'id'>) {
     if (!body.age || !body.hobbies || !body.username) {
       return {
         status: 400,
@@ -144,7 +144,7 @@ class RequestHandler {
         message: 'does not contain required fields',
       };
     }
-    return null
+    return null;
   }
 }
 
