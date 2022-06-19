@@ -57,12 +57,9 @@ class RequestHandler {
     const endPoint = urlData.path;
     switch (endPoint) {
       case '/users': {
-        if (!body.age || !body.hobbies || !body.username) {
-          return {
-            status: 400,
-            payload: null,
-            message: 'does not contain required fields',
-          };
+        const isError = RequestHandler.validateData(body);
+        if(isError){
+          return isError
         }
         DB.add(body as Omit<IUser, 'id'>);
         return {
@@ -83,10 +80,11 @@ class RequestHandler {
 
     switch (endPoint) {
       case endPoint?.match(RequestHandler.userIdRegExp)?.toString(): {
-        const isError = RequestHandler.validateUuid(uuid);
+        const isUuidError = RequestHandler.validateUuid(uuid);
+        const isDataEror = RequestHandler.validateData(body);
 
-        if (isError) {
-          return isError;
+        if (isUuidError || isDataEror) {
+          return isUuidError || isDataEror
         }
 
         const result = DB.update(uuid, body);
@@ -117,7 +115,7 @@ class RequestHandler {
 
         const result = DB.remove(uuid);
         return {
-          status: result ? 200 : 404,
+          status: result ? 204 : 404,
           payload: null,
         };
       }
@@ -136,6 +134,17 @@ class RequestHandler {
     }
 
     return null;
+  }
+
+  static validateData(body: Omit<IUser, 'id'>){
+    if (!body.age || !body.hobbies || !body.username) {
+      return {
+        status: 400,
+        payload: null,
+        message: 'does not contain required fields',
+      };
+    }
+    return null
   }
 }
 

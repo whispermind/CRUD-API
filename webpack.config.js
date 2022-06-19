@@ -1,6 +1,4 @@
 const path = require('path');
-const process = require('process');
-const url = require('url');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
